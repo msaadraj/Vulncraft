@@ -5,6 +5,9 @@
 
 Developed by **ITSOLERA – Theta Team** | Offensive Security & Penetration Testing Internship
 
+---
+
+![VulnCraft CLI Screenshot](assets/screenshot.png)
 
 </div>
 
