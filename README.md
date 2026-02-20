@@ -36,32 +36,12 @@ This module demonstrates how insecure system command construction may introduce 
 - Each payload includes comprehensive documentation:
 
 ```yaml
-- id: xss-ref-001                          # Unique identifier
-  context: html                            # Injection context
-  type: reflected                          # XSS type
-  payload: "<script>alert('XSS')</script>" # Actual payload
-  payload_label: "⚠️ REFERENCE PATTERN"    # Safety warning
-  trigger_type: auto-executing             # Execution type
-  explanation: "Classic reflected XSS..."  # How it works
-  
-  # Security Classification
-  owasp_category: "A03:2021 - Injection"
-  cwe_id: "CWE-79"
-  risk_level: high
-  cvss_base: 6.1
-  attack_vector: network
-  
-  # Traditional Defenses
-  defensive_notes: "HTML encode all user output..."
-  
-  # Modern Mitigations (2025+)
-  modern_mitigations:
-    - technique: "Content Security Policy with Nonces"
-      implementation: "script-src 'nonce-{random}'"
-      effectiveness: "Blocks inline scripts"
-    - technique: "Trusted Types API"
-      implementation: "Enable Trusted Types policy"
-      effectiveness: "Prevents DOM XSS"
+- id: xss-ref-001          # Unique identifier
+  context: html          # Injection context
+  type: reflected           # XSS type
+  payload: "<script>alert('XSS')</script>"           # XSS type
+  explanation: "Classic reflected XSS. Input echoes directly into HTML without encoding."   
+  defensive_notes: "HTML encode all user output. Use Content-Security-Policy script-src."
 ```
 
 ### B) SQL Injection Module
@@ -296,7 +276,6 @@ VulnCraft/
 │  │  ├─ hex.py
 │  ├─ obfuscation/
 │  │  ├─ case_variation.py
-│  │  ├─ 
 │  │  ├─ comment_insertion.py
 │  │  ├─ whitespace_abuse.py
 │  ├─ exporters/
@@ -308,7 +287,7 @@ VulnCraft/
 │     ├─ sqli_templates.yaml
 │     └─ cmdinj_templates.yaml
 ├─ README.md
-└─ setup.py / pyproject.toml
+└─ VulnCraft.py 
 ```
 
 ---
@@ -364,12 +343,14 @@ python payload_gen.py --module xss --output json
 
 
 ```cli
-ID: cmdinj-linux-001
-OS: linux
-Pattern: separator
-Payload: ; [COMMAND]
-Explanation: Demonstrates how command separators may allow unintended chained execution.
-Defensive Notes: Avoid shell string concatenation and use safe execution APIs.
+{
+  "id": "cmdinj-linux-001",
+  "os": "linux",
+  "pattern": "separator",
+  "payload": "; [COMMAND]",
+  "explanation": "Demonstrates how command separators may allow unintended chained execution.",
+  "defensive_notes": "Avoid shell string concatenation and use safe execution APIs."
+}
 
 
 ```
