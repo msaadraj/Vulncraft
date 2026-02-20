@@ -1,0 +1,314 @@
+[
+    {
+        "id": "cmdinj-linux-001",
+        "os": "linux",
+        "type": "separator",
+        "payload": "; [COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-002",
+        "os": "linux",
+        "type": "logical-and",
+        "payload": "&& [COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-003",
+        "os": "linux",
+        "type": "pipe",
+        "payload": "| [COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-004",
+        "os": "linux",
+        "type": "logical-or",
+        "payload": "|| [COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-005",
+        "os": "linux",
+        "type": "subshell",
+        "payload": "$( [COMMAND] )"
+    },
+    {
+        "id": "cmdinj-linux-006",
+        "os": "linux",
+        "type": "legacy-subshell",
+        "payload": "`[COMMAND]`"
+    },
+    {
+        "id": "cmdinj-linux-007",
+        "os": "linux",
+        "type": "newline",
+        "payload": "\\n[COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-008",
+        "os": "linux",
+        "type": "redirect",
+        "payload": "> file.txt"
+    },
+    {
+        "id": "cmdinj-linux-009",
+        "os": "linux",
+        "type": "append-redirect",
+        "payload": ">> file.txt"
+    },
+    {
+        "id": "cmdinj-linux-010",
+        "os": "linux",
+        "type": "variable-expansion",
+        "payload": "$VAR"
+    },
+    {
+        "id": "cmdinj-linux-011",
+        "os": "linux",
+        "type": "spacing-bypass",
+        "payload": "${IFS}[COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-012",
+        "os": "linux",
+        "type": "comment-symbol",
+        "payload": "#[COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-013",
+        "os": "linux",
+        "type": "background",
+        "payload": "& [COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-014",
+        "os": "linux",
+        "type": "wildcard",
+        "payload": "* [COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-015",
+        "os": "linux",
+        "type": "brace-expansion",
+        "payload": "{a,b}[COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-016",
+        "os": "linux",
+        "type": "quote-break",
+        "payload": "\" ; [COMMAND] ; \""
+    },
+    {
+        "id": "cmdinj-linux-017",
+        "os": "linux",
+        "type": "tab-separator",
+        "payload": "\\t[COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-018",
+        "os": "linux",
+        "type": "process-substitution",
+        "payload": "<( [COMMAND] )"
+    },
+    {
+        "id": "cmdinj-linux-019",
+        "os": "linux",
+        "type": "variable-brace",
+        "payload": "${VAR}[COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-020",
+        "os": "linux",
+        "type": "control-mix",
+        "payload": "; $(echo [COMMAND])"
+    },
+    {
+        "id": "cmdinj-linux-021",
+        "os": "linux",
+        "type": "nested-eval",
+        "payload": "`echo $( [COMMAND] )`"
+    },
+    {
+        "id": "cmdinj-linux-022",
+        "os": "linux",
+        "type": "multi-space",
+        "payload": "    ;    [COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-023",
+        "os": "linux",
+        "type": "heredoc",
+        "payload": "<<EOF [COMMAND] EOF"
+    },
+    {
+        "id": "cmdinj-linux-024",
+        "os": "linux",
+        "type": "logical-chain",
+        "payload": "|| echo [COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-025",
+        "os": "linux",
+        "type": "double-separator",
+        "payload": ";; [COMMAND]"
+    },
+    {
+        "id": "cmdinj-linux-026",
+        "os": "linux",
+        "type": "echo-chain",
+        "payload": "; echo [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-001",
+        "os": "windows",
+        "type": "separator",
+        "payload": "& [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-002",
+        "os": "windows",
+        "type": "logical-and",
+        "payload": "&& [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-003",
+        "os": "windows",
+        "type": "logical-or",
+        "payload": "|| [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-004",
+        "os": "windows",
+        "type": "pipe",
+        "payload": "| [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-005",
+        "os": "windows",
+        "type": "grouping",
+        "payload": "( [COMMAND] )"
+    },
+    {
+        "id": "cmdinj-win-006",
+        "os": "windows",
+        "type": "environment",
+        "payload": "%VAR%"
+    },
+    {
+        "id": "cmdinj-win-007",
+        "os": "windows",
+        "type": "newline",
+        "payload": "\\r\\n[COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-008",
+        "os": "windows",
+        "type": "quote-break",
+        "payload": "\" & [COMMAND] & \""
+    },
+    {
+        "id": "cmdinj-win-009",
+        "os": "windows",
+        "type": "redirect",
+        "payload": "> file.txt"
+    },
+    {
+        "id": "cmdinj-win-010",
+        "os": "windows",
+        "type": "append",
+        "payload": ">> file.txt"
+    },
+    {
+        "id": "cmdinj-win-011",
+        "os": "windows",
+        "type": "escape",
+        "payload": "^& [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-012",
+        "os": "windows",
+        "type": "comment",
+        "payload": ":: [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-013",
+        "os": "windows",
+        "type": "delayed-expansion",
+        "payload": "!VAR![COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-014",
+        "os": "windows",
+        "type": "grouped-chain",
+        "payload": "(echo ok)&([COMMAND])"
+    },
+    {
+        "id": "cmdinj-win-015",
+        "os": "windows",
+        "type": "whitespace",
+        "payload": "     & [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-016",
+        "os": "windows",
+        "type": "loop",
+        "payload": "FOR %A IN (1) DO [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-017",
+        "os": "windows",
+        "type": "interpreter-switch",
+        "payload": "powershell -Command [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-018",
+        "os": "windows",
+        "type": "call",
+        "payload": "CALL [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-019",
+        "os": "windows",
+        "type": "percent-expansion",
+        "payload": "%PATH% [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-020",
+        "os": "windows",
+        "type": "nested-group",
+        "payload": "(( [COMMAND] ))"
+    },
+    {
+        "id": "cmdinj-win-021",
+        "os": "windows",
+        "type": "combined-control",
+        "payload": "& (echo ok) && [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-022",
+        "os": "windows",
+        "type": "multiline",
+        "payload": "\\r\\n& [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-023",
+        "os": "windows",
+        "type": "echo-chain",
+        "payload": "& echo [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-024",
+        "os": "windows",
+        "type": "pipe-escaped",
+        "payload": "^| [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-025",
+        "os": "windows",
+        "type": "quote-boundary",
+        "payload": "\" [COMMAND]"
+    },
+    {
+        "id": "cmdinj-win-026",
+        "os": "windows",
+        "type": "spacing-advanced",
+        "payload": "    [COMMAND]"
+    }
+]

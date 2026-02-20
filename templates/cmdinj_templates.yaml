@@ -1,0 +1,385 @@
+# =====================================================
+# COMMAND INJECTION TEMPLATE DATASET
+# Module C – Team D
+# Academic Safe Version (Conceptual strings only)
+# =====================================================
+# Fields:
+# id              → unique identifier
+# os              → linux / windows
+# type            → conceptual pattern category
+# payload         → sanitized demonstration string
+# explanation     → short conceptual explanation (~2 lines)
+# defensive_notes → short defensive recommendation (~2 lines)
+# =====================================================
+
+# =====================================================
+# SECTION 1 — LINUX PAYLOAD TEMPLATES (26)
+# =====================================================
+
+- id: cmdinj-linux-001
+  os: linux
+  type: separator
+  payload: "; [COMMAND]"
+  explanation: "Semicolon separates commands in Unix shells. Unsafe concatenation of input may allow unintended execution."
+  defensive_notes: "Avoid building shell strings manually. Use parameterized process execution APIs."
+
+- id: cmdinj-linux-002
+  os: linux
+  type: logical-and
+  payload: "&& [COMMAND]"
+  explanation: "Logical AND executes the next command if the first succeeds."
+  defensive_notes: "Reject shell control operators and validate input against strict allowlists."
+
+- id: cmdinj-linux-003
+  os: linux
+  type: pipe
+  payload: "| [COMMAND]"
+  explanation: "Pipe forwards output into another command and alters execution flow."
+  defensive_notes: "Disable shell parsing and pass arguments directly to system calls."
+
+- id: cmdinj-linux-004
+  os: linux
+  type: logical-or
+  payload: "|| [COMMAND]"
+  explanation: "Logical OR executes the second command if the first fails."
+  defensive_notes: "Use structured command APIs rather than string-based execution."
+
+- id: cmdinj-linux-005
+  os: linux
+  type: subshell
+  payload: "$( [COMMAND] )"
+  explanation: "Subshell syntax evaluates content dynamically inside the shell."
+  defensive_notes: "Reject substitution syntax and disable shell interpretation."
+
+- id: cmdinj-linux-006
+  os: linux
+  type: legacy-subshell
+  payload: "`[COMMAND]`"
+  explanation: "Backticks perform command substitution in many shells."
+  defensive_notes: "Normalize input and block execution metacharacters."
+
+- id: cmdinj-linux-007
+  os: linux
+  type: newline
+  payload: "\\n[COMMAND]"
+  explanation: "Newlines may act as command separators in shell parsing."
+  defensive_notes: "Strip control characters and enforce printable-only input."
+
+- id: cmdinj-linux-008
+  os: linux
+  type: redirect
+  payload: "> file.txt"
+  explanation: "Redirection operators change output handling."
+  defensive_notes: "Validate filenames and enforce restricted filesystem access."
+
+- id: cmdinj-linux-009
+  os: linux
+  type: append-redirect
+  payload: ">> file.txt"
+  explanation: "Append redirection modifies logging or output storage."
+  defensive_notes: "Run processes with minimal privileges."
+
+- id: cmdinj-linux-010
+  os: linux
+  type: variable-expansion
+  payload: "$VAR"
+  explanation: "Environment variables expand dynamically during execution."
+  defensive_notes: "Avoid shell expansion by using direct execution APIs."
+
+- id: cmdinj-linux-011
+  os: linux
+  type: spacing-bypass
+  payload: "${IFS}[COMMAND]"
+  explanation: "Internal field separator may replace spaces in shell parsing."
+  defensive_notes: "Normalize whitespace and reject symbolic expressions."
+
+- id: cmdinj-linux-012
+  os: linux
+  type: comment-symbol
+  payload: "#[COMMAND]"
+  explanation: "Comment symbols may truncate intended command logic."
+  defensive_notes: "Reject comment characters in user-supplied input."
+
+- id: cmdinj-linux-013
+  os: linux
+  type: background
+  payload: "& [COMMAND]"
+  explanation: "Background operator may allow additional execution contexts."
+  defensive_notes: "Block shell control characters entirely."
+
+- id: cmdinj-linux-014
+  os: linux
+  type: wildcard
+  payload: "* [COMMAND]"
+  explanation: "Wildcard expansion dynamically changes argument lists."
+  defensive_notes: "Disable glob expansion by bypassing shell mode."
+
+- id: cmdinj-linux-015
+  os: linux
+  type: brace-expansion
+  payload: "{a,b}[COMMAND]"
+  explanation: "Brace expansion generates multiple interpreted arguments."
+  defensive_notes: "Reject brace syntax if not required."
+
+- id: cmdinj-linux-016
+  os: linux
+  type: quote-break
+  payload: '" ; [COMMAND] ; "'
+  explanation: "Improper quoting may break argument boundaries."
+  defensive_notes: "Never rely on manual quoting for safety."
+
+- id: cmdinj-linux-017
+  os: linux
+  type: tab-separator
+  payload: "\\t[COMMAND]"
+  explanation: "Tabs may act as token separators in parsing."
+  defensive_notes: "Normalize all whitespace characters before validation."
+
+- id: cmdinj-linux-018
+  os: linux
+  type: process-substitution
+  payload: "<( [COMMAND] )"
+  explanation: "Process substitution introduces alternate execution context."
+  defensive_notes: "Disable interpreter-based execution paths."
+
+- id: cmdinj-linux-019
+  os: linux
+  type: variable-brace
+  payload: "${VAR}[COMMAND]"
+  explanation: "Brace-based expansion modifies parsing dynamically."
+  defensive_notes: "Reject variable expansion syntax."
+
+- id: cmdinj-linux-020
+  os: linux
+  type: control-mix
+  payload: "; $(echo [COMMAND])"
+  explanation: "Nested substitution structures increase parsing complexity."
+  defensive_notes: "Block nested shell syntax entirely."
+
+- id: cmdinj-linux-021
+  os: linux
+  type: nested-eval
+  payload: "`echo $( [COMMAND] )`"
+  explanation: "Nested evaluation combines multiple shell execution forms."
+  defensive_notes: "Never allow shell evaluation of user input."
+
+- id: cmdinj-linux-022
+  os: linux
+  type: multi-space
+  payload: "    ;    [COMMAND]"
+  explanation: "Spacing variations may bypass naive validation checks."
+  defensive_notes: "Collapse repeated whitespace before checking."
+
+- id: cmdinj-linux-023
+  os: linux
+  type: heredoc
+  payload: "<<EOF [COMMAND] EOF"
+  explanation: "Here-document syntax may introduce multi-line shell input."
+  defensive_notes: "Reject multi-line control tokens."
+
+- id: cmdinj-linux-024
+  os: linux
+  type: logical-chain
+  payload: "|| echo [COMMAND]"
+  explanation: "Control-flow operators influence execution branching."
+  defensive_notes: "Use strict token validation."
+
+- id: cmdinj-linux-025
+  os: linux
+  type: double-separator
+  payload: ";; [COMMAND]"
+  explanation: "Repeated separators may still be interpreted."
+  defensive_notes: "Normalize repeated characters before validation."
+
+- id: cmdinj-linux-026
+  os: linux
+  type: echo-chain
+  payload: "; echo [COMMAND]"
+  explanation: "Chained echo demonstrates appended shell execution concept."
+  defensive_notes: "Avoid command concatenation entirely."
+
+# =====================================================
+# SECTION 2 — WINDOWS PAYLOAD TEMPLATES (26)
+# =====================================================
+
+- id: cmdinj-win-001
+  os: windows
+  type: separator
+  payload: "& [COMMAND]"
+  explanation: "Ampersand separates commands in Windows shells."
+  defensive_notes: "Never construct command strings directly."
+
+- id: cmdinj-win-002
+  os: windows
+  type: logical-and
+  payload: "&& [COMMAND]"
+  explanation: "Conditional AND executes next command if previous succeeds."
+  defensive_notes: "Reject shell control operators."
+
+- id: cmdinj-win-003
+  os: windows
+  type: logical-or
+  payload: "|| [COMMAND]"
+  explanation: "Logical OR executes when the first command fails."
+  defensive_notes: "Use structured execution APIs."
+
+- id: cmdinj-win-004
+  os: windows
+  type: pipe
+  payload: "| [COMMAND]"
+  explanation: "Pipe connects command output into another command."
+  defensive_notes: "Avoid shell-based execution paths."
+
+- id: cmdinj-win-005
+  os: windows
+  type: grouping
+  payload: "( [COMMAND] )"
+  explanation: "Parentheses group commands in Windows parsing."
+  defensive_notes: "Escape special characters consistently."
+
+- id: cmdinj-win-006
+  os: windows
+  type: environment
+  payload: "%VAR%"
+  explanation: "Environment variables expand dynamically."
+  defensive_notes: "Disable shell expansion where possible."
+
+- id: cmdinj-win-007
+  os: windows
+  type: newline
+  payload: "\\r\\n[COMMAND]"
+  explanation: "Newlines may separate commands in batch execution."
+  defensive_notes: "Strip control characters."
+
+- id: cmdinj-win-008
+  os: windows
+  type: quote-break
+  payload: '" & [COMMAND] & "'
+  explanation: "Improper quoting may terminate intended argument boundaries."
+  defensive_notes: "Use structured argument passing."
+
+- id: cmdinj-win-009
+  os: windows
+  type: redirect
+  payload: "> file.txt"
+  explanation: "Redirection modifies output location."
+  defensive_notes: "Validate file paths strictly."
+
+- id: cmdinj-win-010
+  os: windows
+  type: append
+  payload: ">> file.txt"
+  explanation: "Append redirection alters logging behavior."
+  defensive_notes: "Use least-privilege execution."
+
+- id: cmdinj-win-011
+  os: windows
+  type: escape
+  payload: "^& [COMMAND]"
+  explanation: "Caret is used as an escape symbol in CMD."
+  defensive_notes: "Normalize escaped sequences."
+
+- id: cmdinj-win-012
+  os: windows
+  type: comment
+  payload: ":: [COMMAND]"
+  explanation: "Batch comment syntax may affect parsing logic."
+  defensive_notes: "Reject comment characters."
+
+- id: cmdinj-win-013
+  os: windows
+  type: delayed-expansion
+  payload: "!VAR![COMMAND]"
+  explanation: "Delayed variable expansion dynamically alters parsing."
+  defensive_notes: "Disable expansion features."
+
+- id: cmdinj-win-014
+  os: windows
+  type: grouped-chain
+  payload: "(echo ok)&([COMMAND])"
+  explanation: "Grouped commands allow complex chained execution."
+  defensive_notes: "Avoid shell grouping syntax."
+
+- id: cmdinj-win-015
+  os: windows
+  type: whitespace
+  payload: "     & [COMMAND]"
+  explanation: "Extra whitespace may bypass naive validation."
+  defensive_notes: "Normalize whitespace."
+
+- id: cmdinj-win-016
+  os: windows
+  type: loop
+  payload: "FOR %A IN (1) DO [COMMAND]"
+  explanation: "Loop constructs introduce secondary execution contexts."
+  defensive_notes: "Reject scripting constructs."
+
+- id: cmdinj-win-017
+  os: windows
+  type: interpreter-switch
+  payload: "powershell -Command [COMMAND]"
+  explanation: "Interpreter switching changes parsing behavior."
+  defensive_notes: "Disallow interpreter invocation."
+
+- id: cmdinj-win-018
+  os: windows
+  type: call
+  payload: "CALL [COMMAND]"
+  explanation: "CALL executes another batch command."
+  defensive_notes: "Reject invocation keywords."
+
+- id: cmdinj-win-019
+  os: windows
+  type: percent-expansion
+  payload: "%PATH% [COMMAND]"
+  explanation: "Environment expansion may alter command resolution."
+  defensive_notes: "Avoid shell execution mode."
+
+- id: cmdinj-win-020
+  os: windows
+  type: nested-group
+  payload: "(( [COMMAND] ))"
+  explanation: "Nested grouping may change execution precedence."
+  defensive_notes: "Reject unexpected parentheses."
+
+- id: cmdinj-win-021
+  os: windows
+  type: combined-control
+  payload: "& (echo ok) && [COMMAND]"
+  explanation: "Combined operators increase parsing complexity."
+  defensive_notes: "Use strict allowlist validation."
+
+- id: cmdinj-win-022
+  os: windows
+  type: multiline
+  payload: "\\r\\n& [COMMAND]"
+  explanation: "Multi-line batch input may introduce extra commands."
+  defensive_notes: "Strip CR/LF characters."
+
+- id: cmdinj-win-023
+  os: windows
+  type: echo-chain
+  payload: "& echo [COMMAND]"
+  explanation: "Chained echo demonstrates appended execution."
+  defensive_notes: "Avoid concatenating commands."
+
+- id: cmdinj-win-024
+  os: windows
+  type: pipe-escaped
+  payload: "^| [COMMAND]"
+  explanation: "Escaped pipe characters may still be interpreted."
+  defensive_notes: "Normalize escape sequences."
+
+- id: cmdinj-win-025
+  os: windows
+  type: quote-boundary
+  payload: '" [COMMAND]'
+  explanation: "Broken quote boundaries may allow interpretation changes."
+  defensive_notes: "Use safe argument passing."
+
+- id: cmdinj-win-026
+  os: windows
+  type: spacing-advanced
+  payload: "    [COMMAND]"
+  explanation: "Spacing anomalies can bypass naive filters."
+  defensive_notes: "Trim and normalize input."

