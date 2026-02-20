@@ -7,7 +7,7 @@ Developed by **ITSOLERA – Theta Team** | Offensive Security & Penetration Test
 
 ---
 
-![VulnCraft CLI Screenshot](assets/screenshot.png)
+![VulnCraft CLI Screenshot](Outputs/assets/Banner.png)
 
 </div>
 
